@@ -1,0 +1,747 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "UserAccount",
+      "description": "User Account checking Balance enquiry"
+    },
+    {
+      "name": "Banking Application",
+      "description": "user information details"
+    },
+    {
+      "name": "QR__CODE ",
+      "description": "QRcode upload a generated .png"
+    },
+    {
+      "name": "BeneficiaryAccount",
+      "description": "APIs for beneficiary account stored in database "
+    },
+    {
+      "name": "Fund Transfer",
+      "description": "APIs for Transaction amount"
+    }
+  ],
+  "paths": {
+    "/api/beneficiary/{id}": {
+      "get": {
+        "tags": [
+          "BeneficiaryAccount"
+        ],
+        "summary": "Beneficiary Get id ",
+        "description": "Retries a specific beneficiary record by ID",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "Successfully Get id",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeneficiaryAccount"
+        ],
+        "summary": "Updated id details",
+        "description": "Updates an existing beneficiary record",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeneficiaryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "BeneficiaryAccount"
+        ],
+        "summary": "Deleted beneficiary id",
+        "description": "Beneficiary id deleted in database",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "not Deleted"
+          },
+          "200": {
+            "description": "beneficiary deleted successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/debug/test_read_qrcode": {
+      "post": {
+        "tags": [
+          "QR__CODE "
+        ],
+        "summary": "QR_CODE Reader",
+        "description": "Generated QRCODE reader data",
+        "operationId": "readQRCode",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  ".png"
+                ],
+                "type": "object",
+                "properties": {
+                  ".png": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {
+            "description": "QR_CODE Not found"
+          },
+          "200": {
+            "description": "Created Successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/register": {
+      "post": {
+        "tags": [
+          "Banking Application"
+        ],
+        "summary": "REGISTER Here",
+        "description": "APIs create a Account",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "user register successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "user may already exist"
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": [
+          "Banking Application"
+        ],
+        "summary": "LogOut user",
+        "description": "APIs for managing User logOut ",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "LogOut successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterRequest"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "Banking Application"
+        ],
+        "summary": "Login user",
+        "description": "APIs Login and stored database",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login Successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Not found"
+          }
+        }
+      }
+    },
+    "/api/fundstransfer": {
+      "post": {
+        "tags": [
+          "Fund Transfer"
+        ],
+        "summary": "fund transfer",
+        "description": "same bank using mobileNumber",
+        "operationId": "sendToBankAccount",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundsTransfer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "transaction successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundsTransfer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "insufficient funds"
+          }
+        }
+      }
+    },
+    "/api/ft_qrcode": {
+      "post": {
+        "tags": [
+          "Fund Transfer"
+        ],
+        "summary": "QR_CODE",
+        "description": "Sending money using QRCode",
+        "operationId": "sendUsingQRCode",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FtQRCode"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "transaction successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundsTransfer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "insufficient funds"
+          }
+        }
+      }
+    },
+    "/api/beneficiary": {
+      "get": {
+        "tags": [
+          "BeneficiaryAccount"
+        ],
+        "summary": "Beneficiary Get all account",
+        "description": "Beneficiary a list of all id record",
+        "operationId": "getAll",
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "Successfully  retrieved",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "BeneficiaryAccount"
+        ],
+        "summary": "Creating  beneficiary",
+        "description": " creates s new beneficiary id account record",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeneficiaryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "created successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/beneficarytransfer": {
+      "post": {
+        "tags": [
+          "Fund Transfer"
+        ],
+        "summary": " transferring amount",
+        "description": "transfer different bank account using bID",
+        "operationId": "transfer",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "transaction successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundsTransfer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "insufficient amount"
+          }
+        }
+      }
+    },
+    "/api/acc/deposit": {
+      "post": {
+        "tags": [
+          "UserAccount"
+        ],
+        "summary": "Deposit Amount",
+        "description": "adding amount into bank account",
+        "operationId": "deposit",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deposited successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account Not Found"
+          }
+        }
+      }
+    },
+    "/api/acc/balance": {
+      "get": {
+        "tags": [
+          "UserAccount"
+        ],
+        "summary": "Get account balance ",
+        "description": "Retrieved Check balance enquiry",
+        "operationId": "getBalance",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "successfully retrieved",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/acc/{id}": {
+      "delete": {
+        "tags": [
+          "UserAccount"
+        ],
+        "summary": "Deleting the account",
+        "description": "Deleted account from DB",
+        "operationId": "deleteAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "DELETE successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BeneficiaryRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "ifscCode": {
+            "type": "string"
+          }
+        }
+      },
+      "BeneficiaryResponse": {
+        "type": "object",
+        "properties": {
+          "beneficiaryId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double"
+          },
+          "username": {
+            "type": "string"
+          },
+          "ifscCode": {
+            "type": "string"
+          },
+          "mobileNo": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          }
+        }
+      },
+      "UserLoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "FundsTransfer": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "username": {
+            "type": "string"
+          },
+          "mobileNo": {
+            "type": "string"
+          },
+          "ifscCode": {
+            "type": "string"
+          }
+        }
+      },
+      "FtQRCode": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "TransactionRequest": {
+        "type": "object",
+        "properties": {
+          "beneficiaryId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      }
+    }
+  }
+}
