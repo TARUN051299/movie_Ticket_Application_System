@@ -12,134 +12,34 @@
   ],
   "tags": [
     {
-      "name": "UserAccount",
-      "description": "User Account checking Balance enquiry"
-    },
-    {
-      "name": "Banking Application",
-      "description": "user information details"
-    },
-    {
-      "name": "QR__CODE ",
-      "description": "QRcode upload a generated .png"
-    },
-    {
-      "name": "BeneficiaryAccount",
-      "description": "APIs for beneficiary account stored in database "
-    },
-    {
-      "name": "Fund Transfer",
-      "description": "APIs for Transaction amount"
+      "name": "Booking Tickets",
+      "description": "Booking tickets and seat checking"
     }
   ],
   "paths": {
-    "/api/beneficiary/{id}": {
-      "get": {
-        "tags": [
-          "BeneficiaryAccount"
-        ],
-        "summary": "Beneficiary Get id ",
-        "description": "Retries a specific beneficiary record by ID",
-        "operationId": "getById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Not found"
-          },
-          "200": {
-            "description": "Successfully Get id",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BeneficiaryResponse"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/booking/cancel/{bookingId}": {
       "put": {
         "tags": [
-          "BeneficiaryAccount"
+          "Booking Tickets"
         ],
-        "summary": "Updated id details",
-        "description": "Updates an existing beneficiary record",
-        "operationId": "update",
+        "operationId": "cancelBooking",
         "parameters": [
           {
-            "name": "id",
+            "name": "bookingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BeneficiaryRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Updated successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BeneficiaryResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not updated"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "BeneficiaryAccount"
-        ],
-        "summary": "Deleted beneficiary id",
-        "description": "Beneficiary id deleted in database",
-        "operationId": "delete",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "404": {
-            "description": "not Deleted"
-          },
           "200": {
-            "description": "beneficiary deleted successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                  "type": "object"
                 }
               }
             }
@@ -147,42 +47,179 @@
         }
       }
     },
-    "/debug/test_read_qrcode": {
+    "/booking": {
       "post": {
         "tags": [
-          "QR__CODE "
+          "Booking Tickets"
         ],
-        "summary": "QR_CODE Reader",
-        "description": "Generated QRCODE reader data",
-        "operationId": "readQRCode",
+        "operationId": "booking",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "required": [
-                  ".png"
-                ],
-                "type": "object",
-                "properties": {
-                  ".png": {
-                    "type": "string",
-                    "format": "binary"
+                "$ref": "#/components/schemas/BookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/theatres": {
+      "get": {
+        "tags": [
+          "theatre-controller"
+        ],
+        "operationId": "getAllTheatre",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "theatre-controller"
+        ],
+        "operationId": "addTheatre",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TheatreRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shows": {
+      "get": {
+        "tags": [
+          "show-controller"
+        ],
+        "operationId": "getShowsByMovieId",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShowEntity"
                   }
                 }
               }
             }
           }
+        }
+      },
+      "post": {
+        "tags": [
+          "show-controller"
+        ],
+        "operationId": "addShow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShowsRequest"
+              }
+            }
+          },
+          "required": true
         },
         "responses": {
-          "404": {
-            "description": "QR_CODE Not found"
-          },
           "200": {
-            "description": "Created Successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountEntity"
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/seats": {
+      "post": {
+        "tags": [
+          "seat-controller"
+        ],
+        "operationId": "addSeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -193,10 +230,8 @@
     "/api/register": {
       "post": {
         "tags": [
-          "Banking Application"
+          "user-controller"
         ],
-        "summary": "REGISTER Here",
-        "description": "APIs create a Account",
         "operationId": "register",
         "requestBody": {
           "content": {
@@ -210,17 +245,92 @@
         },
         "responses": {
           "200": {
-            "description": "user register successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegisterRequest"
+                  "type": "object"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/payments": {
+      "post": {
+        "tags": [
+          "payment-controller"
+        ],
+        "operationId": "makePayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
+            }
           },
-          "400": {
-            "description": "user may already exist"
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies": {
+      "get": {
+        "tags": [
+          "movie-controller"
+        ],
+        "operationId": "getMovies",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "movie-controller"
+        ],
+        "operationId": "addMovie",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -228,14 +338,12 @@
     "/api/logout": {
       "post": {
         "tags": [
-          "Banking Application"
+          "user-controller"
         ],
-        "summary": "LogOut user",
-        "description": "APIs for managing User logOut ",
         "operationId": "logout",
         "parameters": [
           {
-            "name": "token",
+            "name": "sessionId",
             "in": "header",
             "required": true,
             "schema": {
@@ -244,15 +352,12 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Not Found"
-          },
           "200": {
-            "description": "LogOut successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegisterRequest"
+                  "type": "string"
                 }
               }
             }
@@ -263,16 +368,14 @@
     "/api/login": {
       "post": {
         "tags": [
-          "Banking Application"
+          "user-controller"
         ],
-        "summary": "Login user",
-        "description": "APIs Login and stored database",
         "operationId": "login",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserLoginRequest"
+                "$ref": "#/components/schemas/LoginRequest"
               }
             }
           },
@@ -280,313 +383,48 @@
         },
         "responses": {
           "200": {
-            "description": "Login Successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegisterRequest"
+                  "type": "object"
                 }
               }
             }
-          },
-          "400": {
-            "description": "User Not found"
           }
         }
       }
     },
-    "/api/fundstransfer": {
-      "post": {
-        "tags": [
-          "Fund Transfer"
-        ],
-        "summary": "fund transfer",
-        "description": "same bank using mobileNumber",
-        "operationId": "sendToBankAccount",
-        "parameters": [
-          {
-            "name": "session",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FundsTransfer"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "transaction successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/FundsTransfer"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "insufficient funds"
-          }
-        }
-      }
-    },
-    "/api/ft_qrcode": {
-      "post": {
-        "tags": [
-          "Fund Transfer"
-        ],
-        "summary": "QR_CODE",
-        "description": "Sending money using QRCode",
-        "operationId": "sendUsingQRCode",
-        "parameters": [
-          {
-            "name": "session",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FtQRCode"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "transaction successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/FundsTransfer"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "insufficient funds"
-          }
-        }
-      }
-    },
-    "/api/beneficiary": {
+    "/booking/{userId}": {
       "get": {
         "tags": [
-          "BeneficiaryAccount"
+          "Booking Tickets"
         ],
-        "summary": "Beneficiary Get all account",
-        "description": "Beneficiary a list of all id record",
-        "operationId": "getAll",
+        "operationId": "getBookings",
+        "parameters": [],
         "responses": {
-          "404": {
-            "description": "Not found"
-          },
           "200": {
-            "description": "Successfully  retrieved",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BeneficiaryResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BookingEntity"
+                  }
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "BeneficiaryAccount"
-        ],
-        "summary": "Creating  beneficiary",
-        "description": " creates s new beneficiary id account record",
-        "operationId": "create",
-        "parameters": [
-          {
-            "name": "session",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BeneficiaryRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "created successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BeneficiaryResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "/api/beneficarytransfer": {
-      "post": {
-        "tags": [
-          "Fund Transfer"
-        ],
-        "summary": " transferring amount",
-        "description": "transfer different bank account using bID",
-        "operationId": "transfer",
-        "parameters": [
-          {
-            "name": "session",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransactionRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "transaction successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/FundsTransfer"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "insufficient amount"
-          }
-        }
-      }
-    },
-    "/api/acc/deposit": {
-      "post": {
-        "tags": [
-          "UserAccount"
-        ],
-        "summary": "Deposit Amount",
-        "description": "adding amount into bank account",
-        "operationId": "deposit",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "number",
-                "format": "double"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Deposited successfully",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountEntity"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Account Not Found"
-          }
-        }
-      }
-    },
-    "/api/acc/balance": {
+    "/api/theatres/{id}": {
       "get": {
         "tags": [
-          "UserAccount"
+          "theatre-controller"
         ],
-        "summary": "Get account balance ",
-        "description": "Retrieved Check balance enquiry",
-        "operationId": "getBalance",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Not found"
-          },
-          "200": {
-            "description": "successfully retrieved",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountEntity"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/acc/{id}": {
-      "delete": {
-        "tags": [
-          "UserAccount"
-        ],
-        "summary": "Deleting the account",
-        "description": "Deleted account from DB",
-        "operationId": "deleteAccount",
+        "operationId": "getTheatre",
         "parameters": [
           {
             "name": "id",
@@ -599,15 +437,138 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not found"
-          },
           "200": {
-            "description": "DELETE successfully",
+            "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountEntity"
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shows/{id}/seats": {
+      "get": {
+        "tags": [
+          "show-controller"
+        ],
+        "operationId": "getSeats",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SeatEntity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/qrcode/{qrCodeId}": {
+      "get": {
+        "tags": [
+          "qr-code-controller"
+        ],
+        "operationId": "getQrCode",
+        "parameters": [
+          {
+            "name": "qrCodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/{paymentId}": {
+      "get": {
+        "tags": [
+          "payment-controller"
+        ],
+        "operationId": "getPayment",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/{id}": {
+      "get": {
+        "tags": [
+          "movie-controller"
+        ],
+        "operationId": "getMovie",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -618,64 +579,74 @@
   },
   "components": {
     "schemas": {
-      "BeneficiaryRequest": {
+      "BookingRequest": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "ifscCode": {
-            "type": "string"
-          }
-        }
-      },
-      "BeneficiaryResponse": {
-        "type": "object",
-        "properties": {
-          "beneficiaryId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "AccountEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "showId": {
             "type": "integer",
             "format": "int64"
           },
-          "accountId": {
-            "type": "string"
+          "seatIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
-          "balance": {
+          "totalAmount": {
             "type": "number",
             "format": "double"
-          },
-          "username": {
+          }
+        }
+      },
+      "TheatreRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string"
           },
-          "ifscCode": {
+          "location": {
+            "type": "string"
+          }
+        }
+      },
+      "ShowsRequest": {
+        "type": "object",
+        "properties": {
+          "movieId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "theatreId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "showTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "SeatRequest": {
+        "type": "object",
+        "properties": {
+          "seatNumber": {
             "type": "string"
           },
-          "mobileNo": {
-            "type": "string"
+          "showId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "RegisterRequest": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
@@ -683,16 +654,43 @@
           },
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "PaymentRequest": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string"
           },
-          "mobile": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MovieRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "genre": {
             "type": "string"
           }
         }
       },
-      "UserLoginRequest": {
+      "LoginRequest": {
         "type": "object",
         "properties": {
-          "username": {
+          "email": {
             "type": "string"
           },
           "password": {
@@ -700,45 +698,141 @@
           }
         }
       },
-      "FundsTransfer": {
+      "BookingEntity": {
         "type": "object",
         "properties": {
-          "amount": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bookingId": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserEntity"
+          },
+          "show": {
+            "$ref": "#/components/schemas/ShowEntity"
+          },
+          "totalAmount": {
             "type": "number",
             "format": "double"
+          },
+          "bookingTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "seats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeatEntity"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "BOOKED",
+              "CANCELLED"
+            ]
+          }
+        }
+      },
+      "MovieEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "genre": {
+            "type": "string"
+          }
+        }
+      },
+      "SeatEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seatNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "PENDING",
+              "BOOKED"
+            ]
+          }
+        }
+      },
+      "ShowEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "movie": {
+            "$ref": "#/components/schemas/MovieEntity"
+          },
+          "theatre": {
+            "$ref": "#/components/schemas/TheatreEntity"
+          },
+          "showTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "TheatreEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      },
+      "UserEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
           },
           "username": {
             "type": "string"
           },
-          "mobileNo": {
+          "password": {
             "type": "string"
           },
-          "ifscCode": {
+          "email": {
             "type": "string"
-          }
-        }
-      },
-      "FtQRCode": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          }
-        }
-      },
-      "TransactionRequest": {
-        "type": "object",
-        "properties": {
-          "beneficiaryId": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
           }
         }
       }
