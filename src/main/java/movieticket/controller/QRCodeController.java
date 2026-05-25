@@ -1,6 +1,12 @@
 package movieticket.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import movieticket.entity.QRCodeEntity;
 import movieticket.utills.QRCodeGeneration;
 import org.springframework.core.io.FileSystemResource;
@@ -15,6 +21,7 @@ import java.io.File;
 
 @RestController
 @RequestMapping("/api/qrcode")
+@Tag(name="Qr__Code Generation",description = "payment completed get Qr code")
 public class QRCodeController {
 
 
@@ -24,7 +31,19 @@ public class QRCodeController {
         this.qrCodeGeneration = qrCodeGeneration;
     }
 
-
+    @Operation(summary = "QR__Code",description = "Getting Qr__Code  ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully ",
+                    content = @Content(schema = @Schema(implementation = QRCodeEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found",
+                    content = @Content
+            )
+    })
 
     @GetMapping("/{qrCodeId}")
 

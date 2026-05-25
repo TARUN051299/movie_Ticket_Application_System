@@ -1,6 +1,11 @@
 package movieticket.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import movieticket.Dto.BookingRequest;
 import movieticket.entity.BookingEntity;
@@ -26,7 +31,18 @@ public class BookingController {
         this.sessionRepository = sessionRepository;
     }
 
-
+@Operation(summary = "Booking Process",description = "After selecting Seats and Booking conformation")
+@ApiResponses(value = {
+        @ApiResponse(
+                responseCode = "200",
+                description = "Booking successfully",
+        content = @Content(schema = @Schema(implementation = BookingEntity.class))),
+        @ApiResponse(
+                responseCode = "404",
+                description = "Booking Failed",
+                content = @Content
+        )
+})
 
 
     @PostMapping
@@ -38,11 +54,39 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.booking(bookingRequest,session));
     }
 
+    @Operation(summary = "Booking details Get id",description = "Retries a booking id on display")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully Get id",
+                    content = @Content(schema = @Schema(implementation = BookingEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Id not valid & give correct id",
+                    content = @Content
+            )
+    })
+
     @GetMapping("/{userId}")
     public ResponseEntity<List<BookingEntity>> getBookings(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.getBookings(id));
 
     }
+    @Operation(summary = "Booking cancel ",description = "users send a booking cancel msg")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully cancel",
+                    content = @Content(schema = @Schema(implementation = BookingEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Id not valid",
+                    content = @Content
+            )
+    })
+
 
 
     @PutMapping("/cancel/{bookingId}")

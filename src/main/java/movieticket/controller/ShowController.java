@@ -1,7 +1,14 @@
 package movieticket.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import movieticket.Dto.ShowsRequest;
+import movieticket.entity.MovieEntity;
 import movieticket.entity.SeatEntity;
 import movieticket.entity.ShowEntity;
 import movieticket.repository.SeatRepository;
@@ -14,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/shows")
+@Tag(name = "MOVIE__Shows",description = "API's for shows of the movies")
 public class ShowController {
 
     private final ShowService showService;
@@ -24,6 +32,20 @@ public class ShowController {
         this.showService = showService;
         this.seatRepository = seatRepository;
     }
+
+    @Operation(summary = "Creating Movie__Shows",description = "Creating shows of all movies ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Created successfully ",
+                    content = @Content(schema = @Schema(implementation = MovieEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "NOt Created",
+                    content = @Content
+            )
+    })
 
 
 
@@ -36,6 +58,20 @@ public class ShowController {
         return ResponseEntity.ok("Show Updated Successfully ");
     }
 
+    @Operation(summary = "Get All  Show Listed",description = "GET All  list ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved ",
+                    content = @Content(schema = @Schema(implementation = MovieEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "NOt Found",
+                    content = @Content
+            )
+    })
+
     @GetMapping
     public ResponseEntity<List<ShowEntity>> getShowsByMovieId(@RequestParam Long movieId) {
 
@@ -45,6 +81,20 @@ public class ShowController {
         return ResponseEntity.ok(showService.getShowsByMovieId(movieId));
     }
 
+
+    @Operation(summary = "Shows Get id",description = "Retrieves a specific record by id ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully Get id ",
+                    content = @Content(schema = @Schema(implementation = ShowEntity.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found",
+                    content = @Content
+            )
+    })
 
     @GetMapping("/{id}/seats")
     public ResponseEntity<List<SeatEntity>> getSeats(@PathVariable Long id) {
